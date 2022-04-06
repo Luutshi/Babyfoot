@@ -6,17 +6,25 @@
 
 {% block content %}
     <section class="teams">
-        {% for i in 1..tournament.numberOfTeam %}
-            <article class="team{{ i }}">
-                <p>Team {{ i }}</p>
-                    {% for player in players %}
-                        {% if (player.team == i)  %}
-                            <label for="attaquant">Attaquant</label>
-                            <p>{{ player.user_id }}</p>
-                        {% endif %}
-                    {% endfor %}
-                    <label for="defenseur">Défenseur</label>
-                    <input id="defenseur" type="text"><br>
+        {% for key, team in teams %}
+            <article class="team{{ key }}">
+                <p>Team {{ key }}</p>
+                <div>
+                    <p>Attaquant:</p>
+                {% if (team.attaquant == null) %}
+                    <button>non</button>
+                {% else %}
+                    <p>{{ team.attaquant }}</p>
+                {% endif %}
+                </div>
+                <div>
+                    <p>Defenseur:</p>
+                    {% if (team.defenseur == null) %}
+                        <button>non</button>
+                    {% else %}
+                        <p>{{ team.defenseur }}</p>
+                    {% endif %}
+                </div>
             </article>
         {% endfor %}
     </section>
