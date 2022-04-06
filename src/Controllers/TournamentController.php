@@ -77,8 +77,16 @@ class TournamentController extends Controller
 
     public function joinTeam()
     {
-        $this->tournamentModel->addPlayerToTeam($_GET['tournamentID'], $_GET['teamID'], $_GET['user_function'], $_SESSION['user']['id']);
-        header('Location: /joinTournament?id='.$_GET['tournamentID']);
+        $players = $this->tournamentModel->eachPlayers($_GET['tournamentID']);
+
+        foreach ($players as $player) {
+            if ($_SESSION['user']['id'] !== $player['user_id']) {
+                echo ("test");
+                break;
+            }
+        }
+
+        dump($players);
     }
 
 }
