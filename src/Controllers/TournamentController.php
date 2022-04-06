@@ -4,14 +4,17 @@ namespace Mvc\Controllers;
 
 use Config\Controller;
 use Mvc\Models\TournamentModel;
+use Mvc\Models\UserModel;
 
 class TournamentController extends Controller
 {
     private TournamentModel $tournamentModel;
+    private UserModel $userModel;
 
     public function __construct()
     {
         $this->tournamentModel = new TournamentModel();
+        $this->userModel = new UserModel();
         parent::__construct();
     }
 
@@ -42,15 +45,35 @@ class TournamentController extends Controller
         $tournament = $this->tournamentModel->tournamentByID($_GET['id']);
 
         if ($tournament) {
+            $players = $this->tournamentModel->eachPlayers($_GET['id']);
+
+            $teams = [];
+            for ($i = 1; $i <= $tournament['numberOfTeam']; $i++)
+            {
+                $teams[$i]['attaquant'] = null;
+                $teams[$i]['defenseur'] = null;
+
+                foreach($players as $player)
+                {
+                    if ($player['team'] == $i) {
+                        $user = $this->userModel->findOneByID($player['user_id']);
+                        $teams[$i][$player['user_function']] = $user['nickname'];
+                    }
+                }
+            }
+
             echo $this->twig->render('Tournaments/joinTournament.html.twig', [
-                "tournament" => $tournament
+                "tournament" => $tournament,
+                "teams" => $teams
             ]);
         } else {
             header('Location: /');
             exit;
         }
 
-        var_dump($tournament);
+        dump($tournament);
+        dump($teams);
+        dump($players);
     }
 
 }

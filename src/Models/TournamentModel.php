@@ -26,6 +26,17 @@ class TournamentModel extends Model
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function eachPlayers($tournamentID)
+    {
+        $statement = $this->pdo->prepare('SELECT * FROM `tournament_player` WHERE `tournamentID` = :tournamentID');
+        $statement->execute([
+            "tournamentID" => $tournamentID
+        ]);
+
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+
     public function tournamentByID($tournamentID)
     {
         $statement = $this->pdo->prepare('SELECT * FROM `tournament` WHERE `id` = :tournamentID');
