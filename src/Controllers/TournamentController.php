@@ -33,10 +33,18 @@ class TournamentController extends Controller
 
     public function listTournament()
     {
+        $availablePlaces = [];
+
         $tournaments = $this->tournamentModel->eachTournaments();
+
+        foreach($tournaments as $tournament)
+        {
+            $availablePlaces[$tournament['id']] = $this->tournamentModel->eachPlayers($tournament['id']);
+        }
 
         echo $this->twig->render('Home/home.html.twig', [
             'tournaments' => $tournaments,
+            'availablePlaces' => $availablePlaces
         ]);
     }
 
@@ -70,9 +78,6 @@ class TournamentController extends Controller
             header('Location: /');
             exit;
         }
-
-        dump($tournament);
-        dump($teams);
     }
 
     public function joinTeam()
@@ -90,5 +95,4 @@ class TournamentController extends Controller
 
         $this->tournamentModel->addPlayerToTeam($_GET['tournamentID'], $_GET['teamID'], $_GET['user_function'], $_SESSION['user']['id']);
     }
-
 }
