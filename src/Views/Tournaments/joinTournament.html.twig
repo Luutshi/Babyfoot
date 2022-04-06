@@ -2,37 +2,15 @@
 
 {% block content %}
     <section class="teams">
-        <article class="rouge">
-            <p>Team rouge</p>
-            <label for="attaquant"></label>
-            <input id="attaquant" type="text"><br>
-            <label for="defenseur"></label>
-            <input id="defenseur" type="text"><br>
-        </article>
-
-        <article class="vert">
-            <p>Team vert</p>
-            <label for="attaquant"></label>
-            <input id="attaquant" type="text"><br>
-            <label for="defenseur"></label>
-            <input id="defenseur" type="text"><br>
-        </article>
-
-        <article class="bleu">
-            <p>Team bleu</p>
-            <label for="attaquant"></label>
-            <input id="attaquant" type="text"><br>
-            <label for="defenseur"></label>
-            <input id="defenseur" type="text"><br>
-        </article>
-
-        <article class="jaune">
-            <p>Team jaune</p>
-            <label for="attaquant"></label>
-            <input id="attaquant" type="text"><br>
-            <label for="defenseur"></label>
-            <input id="defenseur" type="text"><br>
-        </article>
+        {% for i in 1..tournament.numberOfTeam %}
+            <article class="team{{ i }}">
+                <p>Team {{ i }}</p>
+                <label for="attaquant">Attaquant</label>
+                <input id="attaquant" type="text"><br>
+                <label for="defenseur">Défenseur</label>
+                <input id="defenseur" type="text"><br>
+            </article>
+        {% endfor %}
 
         <input type="submit" value="Valider ma place">
     </section>
