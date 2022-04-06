@@ -27,6 +27,16 @@ class UserModel extends Model
         return $statement->fetch(PDO::FETCH_ASSOC);
     }
 
+    public function findOneByID(string $id)
+    {
+        $statement = $this->pdo->prepare('SELECT * FROM `user` WHERE `id` = :id');
+        $statement->execute([
+            'id' => $id,
+        ]);
+
+        return $statement->fetch(PDO::FETCH_ASSOC);
+    }
+
     public function doesExist(string $nickname, string $email)
     {
         $statement = $this->pdo->prepare('SELECT * FROM `user` WHERE `nickname` = :nickname OR `email` = :email');

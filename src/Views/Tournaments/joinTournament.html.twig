@@ -1,14 +1,22 @@
 {% extends 'base.html.twig' %}
 
+{% block css %}
+    <link href="css/Tournaments/joinTournament.css" rel="stylesheet">
+{% endblock %}
+
 {% block content %}
     <section class="teams">
         {% for i in 1..tournament.numberOfTeam %}
             <article class="team{{ i }}">
                 <p>Team {{ i }}</p>
-                <label for="attaquant">Attaquant</label>
-                <input id="attaquant" type="text"><br>
-                <label for="defenseur">Défenseur</label>
-                <input id="defenseur" type="text"><br>
+                    {% for player in players %}
+                        {% if (player.team == i)  %}
+                            <label for="attaquant">Attaquant</label>
+                            <p>{{ player.user_id }}</p>
+                        {% endif %}
+                    {% endfor %}
+                    <label for="defenseur">Défenseur</label>
+                    <input id="defenseur" type="text"><br>
             </article>
         {% endfor %}
 
