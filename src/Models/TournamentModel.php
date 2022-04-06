@@ -7,13 +7,14 @@ use PDO;
 
 class TournamentModel extends Model
 {
-    public function createTournament(string $tournamentCreator, string $tournamentName, string $tournamentDescription)
+    public function createTournament(string $creator, string $name, string $description, int $numberOfTeam)
     {
-        $statement = $this->pdo->prepare('INSERT INTO `tournament`(`creator`, `name`, `description`) VALUES (:creator, :name, :description)');
+        $statement = $this->pdo->prepare('INSERT INTO `tournament`(`creator`, `name`, `description`, `numberOfTeam`) VALUES (:creator, :name, :description, :numberOfTeam)');
         $statement->execute([
-            'creator' => $tournamentCreator,
-            'name' => $tournamentName,
-            'description' => $tournamentDescription
+            'creator' => $creator,
+            'name' => $name,
+            'description' => $description,
+            'numberOfTeam' => $numberOfTeam
         ]);
     }
 
