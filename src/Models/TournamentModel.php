@@ -9,19 +9,18 @@ class TournamentModel extends Model
 {
     public function createTournament(string $creator, string $name, string $description, int $numberOfTeam)
     {
-        $statement = $this->pdo->prepare('INSERT INTO `tournament`(`creator`, `name`, `description`, `numberOfTeam`, `actualNbOfPlayers`) VALUES (:creator, :name, :description, :numberOfTeam, :actualNbOfPlayers)');
+        $statement = $this->pdo->prepare('INSERT INTO `tournament`(`creator`, `name`, `description`, `numberOfTeam`) VALUES (:creator, :name, :description, :numberOfTeam)');
         $statement->execute([
             'creator' => $creator,
             'name' => $name,
             'description' => $description,
-            'numberOfTeam' => $numberOfTeam,
-            'actualNbOfPlayers' => 0
+            'numberOfTeam' => $numberOfTeam
         ]);
     }
 
     public function eachTournaments()
     {
-        $statement = $this->pdo->prepare('SELECT * FROM `tournament`');
+        $statement = $this->pdo->prepare('SELECT * FROM `tournament` ORDER BY id DESC');
         $statement->execute();
 
         return $statement->fetchAll(PDO::FETCH_ASSOC);
