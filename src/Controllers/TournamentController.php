@@ -46,9 +46,6 @@ class TournamentController extends Controller
             'tournaments' => $tournaments,
             'availablePlaces' => $availablePlaces
         ]);
-
-        dump($availablePlaces);
-        dump($tournaments);
     }
 
     public function joinTournament()
@@ -88,5 +85,4 @@ class TournamentController extends Controller
         $this->tournamentModel->addPlayerToTeam($_GET['tournamentID'], $_GET['teamID'], $_GET['user_function'], $_SESSION['user']['id']);
         header('Location: /joinTournament?id='.$_GET['tournamentID']);
     }
-
 }
