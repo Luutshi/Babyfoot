@@ -12,7 +12,11 @@
                 <div>
                     <p>Attaquant:</p>
                 {% if (team.attaquant == null) %}
-                    <a href="/joinTeam?tournamentID={{ tournament.id }}&teamID={{ key }}&user_function=attaquant"><button>Join the team</button></a>
+                    {% if (not session.user) %}
+                        <a href="/login"><button>Connect to join</button></a>
+                    {% else %}
+                        <a href="/joinTeam?tournamentID={{ tournament.id }}&teamID={{ key }}&user_function=attaquant"><button>Join the team</button></a>
+                    {% endif %}
                 {% else %}
                     <p>{{ team.attaquant }}</p>
                 {% endif %}
@@ -20,7 +24,11 @@
                 <div>
                     <p>Defenseur:</p>
                     {% if (team.defenseur == null) %}
-                        <a href="/joinTeam?tournamentID={{ tournament.id }}&teamID={{ key }}&user_function=defenseur"><button>Join the team</button></a>
+                        {% if (not session.user) %}
+                            <a href="/login"><button>Connect to join</button></a>
+                        {% else %}
+                            <a href="/joinTeam?tournamentID={{ tournament.id }}&teamID={{ key }}&user_function=defenseur"><button>Join the team</button></a>
+                        {% endif %}
                     {% else %}
                         <p>{{ team.defenseur }}</p>
                     {% endif %}
