@@ -36,7 +36,7 @@ class TournamentController extends Controller
         $tournaments = $this->tournamentModel->eachTournaments();
 
         echo $this->twig->render('Home/home.html.twig', [
-            'tournaments' => $tournaments
+            'tournaments' => $tournaments,
         ]);
     }
 
