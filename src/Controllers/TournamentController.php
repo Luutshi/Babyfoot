@@ -86,13 +86,11 @@ class TournamentController extends Controller
 
         foreach ($players as $player) {
             if ($_SESSION['user']['id'] == $player['user_id']) {
-                header('Location: ../joinTournament?id='.$_GET['tournamentID']);
-                exit;
+                $this->tournamentModel->removePlayerFromTournament($_GET['tournamentID'], $_SESSION['user']['id']);
             }
-            dump($player);
         }
-        dump($_SESSION['user']['id']);
 
         $this->tournamentModel->addPlayerToTeam($_GET['tournamentID'], $_GET['teamID'], $_GET['user_function'], $_SESSION['user']['id']);
+        header('Location: ../joinTournament?id='.$_GET['tournamentID']);
     }
 }
