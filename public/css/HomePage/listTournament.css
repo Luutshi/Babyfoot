@@ -1,0 +1,32 @@
+.tournamentList {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.tournamentList a {
+    background-color: #737373;
+    width: 50%;
+}
+
+.tournamentList a:hover {
+    background-color: #b3b3b3;
+}
+
+.tournamentList .name {
+    text-align: center;
+    word-break: break-word;
+}
+
+.tournamentList .description {
+    word-break: break-word;
+}
+
+.tournamentList p {
+    padding: 10px;
+    margin: 0;
+}
+
+.tournamentList h2 {
+    margin-bottom: 0;
+}

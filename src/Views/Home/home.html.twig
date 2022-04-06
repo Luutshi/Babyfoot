@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block css %}
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/HomePage/listTournament.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <section class="tournamentList">
+        <h2>Tournament list</h2>
+        {% for tournament in tournaments %}
+            <a href="/joinTournament?id={{ tournament.id }}">
+                <p class="name"><u>{{ tournament.name }} - {{ tournament.creator }}</u></p>
+                <p class="description"><u>Description:</u>&nbsp;{{ tournament.description }}</p>
+            </a>
+        {% endfor %}
+    </section>
+
+{% endblock %}

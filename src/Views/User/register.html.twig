@@ -1,0 +1,13 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <form action="" method="POST">
+        <label for="nickname">Nickname</label>
+        <input type="text" id="nickname" name="nickname" placeholder="Callypso10" required><br>
+        <label for="email">Email</label>
+        <input type="text" id="email" name="email" placeholder="callypso10@gmail.com" required><br>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="**********" required><br>
+        <input type="submit" value="register">
+    </form>
+{% endblock %}

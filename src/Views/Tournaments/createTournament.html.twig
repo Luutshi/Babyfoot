@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <form action="" method="POST">
+        <label for="tournamentName">Name of the tournament</label>
+        <input type="text" id="tournamentName" name="tournamentName" placeholder="Name" required><br>
+        <label for="tournamentDescription">Description for the tournament</label><br>
+        <textarea type="text" id="tournamentDescription" name="tournamentDescription" placeholder="Description" required></textarea><br>
+        <input type="submit" value="create tournament">
+    </form>
+{% endblock %}

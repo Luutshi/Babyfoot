@@ -1,0 +1,18 @@
+{
+    "name": "admin/project-mvc",
+    "type": "no",
+    "autoload": {
+        "psr-4": {
+            "Mvc\\": "src/",
+            "Config\\": "config/"
+        }
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^6.0"
+    },
+    "require": {
+        "bramus/router": "^1.6",
+        "twig/twig": "^3.3",
+        "ext-pdo": "*"
+    }
+}
