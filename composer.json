@@ -1,5 +1,5 @@
 {
-    "name": "admin/project-mvc",
+    "name": "luutshi/babyfoot",
     "type": "no",
     "autoload": {
         "psr-4": {
