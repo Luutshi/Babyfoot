@@ -12,6 +12,7 @@
     background-color: #b3b3b3;
     padding: 10px 0 20px 10px;
     width: 250px;
+    border-radius: 5px;
 }
 
 .teams article > p {
@@ -24,4 +25,10 @@
 .teams article > div {
     display: flex;
     gap: 5px;
+    align-items: center;
+}
+
+.teams article > div button {
+    border: solid 2px black;
+    padding: 5px 20px;
 }
