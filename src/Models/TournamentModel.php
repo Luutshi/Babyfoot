@@ -56,4 +56,13 @@ class TournamentModel extends Model
             'user_id' => $user_id
         ]);
     }
+
+    public function removePlayerFromTournament(int $tournamentID, int $user_id)
+    {
+        $statement = $this->pdo->prepare('DELETE FROM `tournament_player` WHERE `tournament_id` = :tournamentID AND `user_id` = :user_id');
+        $statement->execute([
+            'tournamentID' => $tournamentID,
+            'user_id' => $user_id
+        ]);
+    }
 }
