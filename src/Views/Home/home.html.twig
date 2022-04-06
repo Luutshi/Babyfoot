@@ -11,7 +11,7 @@
         {% for tournament in tournaments %}
             <a href="/joinTournament?id={{ tournament.id }}">
                 <p class="name"><u>{{ tournament.name }} - {{ tournament.creator }}</u></p>
-                <p><u>Number player</u> : {{ availablePlaces[tournament.id]|length }}/{{ tournament.numberOfTeam * 2}}</p>
+                <p><u>Number of players</u> : {{ availablePlaces[tournament.id]|length }}/{{ tournament.numberOfTeam * 2}}</p>
                 <p class="description"><u>Description:</u>&nbsp;{{ tournament.description }}</p>
             </a>
         {% endfor %}
