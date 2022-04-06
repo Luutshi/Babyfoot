@@ -10,6 +10,16 @@ header {
     padding: 0 100px;
 }
 
+nav button {
+    background-color: rgb(50, 50, 50);
+    border: none;
+    padding: 10px 20px;
+}
+
+nav button a {
+    color: white;
+}
+
 a {
     color: black;
     text-decoration: none;

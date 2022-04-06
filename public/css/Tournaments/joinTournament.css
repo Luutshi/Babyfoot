@@ -1,0 +1,16 @@
+.teams {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+}
+
+.teams article {
+    background-color: #b3b3b3;
+    padding: 0 0 20px 10px;
+    width: 250px;
+}
+
+.teams > input {
+    height: 50px;
+}
