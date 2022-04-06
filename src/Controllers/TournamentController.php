@@ -73,7 +73,6 @@ class TournamentController extends Controller
 
         dump($tournament);
         dump($teams);
-        dump($players);
     }
 
 }
