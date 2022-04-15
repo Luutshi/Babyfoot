@@ -78,19 +78,32 @@ class TournamentController extends Controller
             header('Location: /');
             exit;
         }
+
+        dump($player);
     }
 
     public function joinTeam()
     {
         $players = $this->tournamentModel->eachPlayers($_GET['tournamentID']);
 
+        $valid = true;
         foreach ($players as $player) {
-            if ($_SESSION['user']['id'] == $player['user_id']) {
-                $this->tournamentModel->removePlayerFromTournament($_GET['tournamentID'], $_SESSION['user']['id']);
+            if ($player['team'] === $_GET['teamID'] && $player['user_function'] === $_GET['user_function']) {
+                $valid = false;
             }
         }
 
-        $this->tournamentModel->addPlayerToTeam($_GET['tournamentID'], $_GET['teamID'], $_GET['user_function'], $_SESSION['user']['id']);
+        if ($valid === true) {
+            foreach ($players as $player)
+            {
+                if ($_SESSION['user']['id'] == $player['user_id']) {
+                    $this->tournamentModel->removePlayerFromTournament($_GET['tournamentID'], $_SESSION['user']['id']);
+                }
+            }
+
+            $this->tournamentModel->addPlayerToTeam($_GET['tournamentID'], $_GET['teamID'], $_GET['user_function'], $_SESSION['user']['id']);
+        }
+
         header('Location: ../joinTournament?id='.$_GET['tournamentID']);
     }
 }
