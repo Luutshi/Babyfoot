@@ -78,8 +78,6 @@ class TournamentController extends Controller
             header('Location: /');
             exit;
         }
-
-        dump($player);
     }
 
     public function joinTeam()
