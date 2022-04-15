@@ -48,7 +48,7 @@ class TournamentController extends Controller
         ]);
     }
 
-    public function joinTournament()
+    public function tournament()
     {
         $tournament = $this->tournamentModel->tournamentByID($_GET['id']);
 

@@ -33,8 +33,8 @@ $router->post('/login', 'Mvc\Controllers\UserController@login');
 $router->get('/logout', 'Mvc\Controllers\UserController@logout');
 $router->get('/addTournament', 'Mvc\Controllers\TournamentController@addTournament');
 $router->post('/addTournament', 'Mvc\Controllers\TournamentController@addTournament');
-$router->get('/joinTournament', 'Mvc\Controllers\TournamentController@joinTournament');
-$router->post('/joinTournament', 'Mvc\Controllers\TournamentController@joinTournament');
+$router->get('/tournament', 'Mvc\Controllers\TournamentController@tournament');
+$router->post('/tournament', 'Mvc\Controllers\TournamentController@tournament');
 $router->get('/joinTeam', 'Mvc\Controllers\TournamentController@joinTeam');
 
 $router->run();
