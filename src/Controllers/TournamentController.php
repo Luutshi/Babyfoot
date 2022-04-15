@@ -70,7 +70,7 @@ class TournamentController extends Controller
                 }
             }
 
-            echo $this->twig->render('Tournaments/joinTournament.html.twig', [
+            echo $this->twig->render('Tournaments/tournament.html.twig', [
                 "tournament" => $tournament,
                 "teams" => $teams
             ]);
@@ -102,6 +102,6 @@ class TournamentController extends Controller
             $this->tournamentModel->addPlayerToTeam($_GET['tournamentID'], $_GET['teamID'], $_GET['user_function'], $_SESSION['user']['id']);
         }
 
-        header('Location: ../joinTournament?id='.$_GET['tournamentID']);
+        header('Location: ../tournament?id='.$_GET['tournamentID']);
     }
 }
