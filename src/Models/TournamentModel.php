@@ -34,10 +34,42 @@ class TournamentModel extends Model
 
     public function changeTournamentStatus($tournamentID, $tournamentStatus)
     {
-        $statement = $this->pdo->prepare('UPDATE `tournament` SET `tournamentStatus` = :tournamentStatus WHERE `id` = :id ORDER BY id DESC');
+        $statement = $this->pdo->prepare('UPDATE `tournament` SET `tournamentStatus` = :tournamentStatus WHERE `id` = :id');
         $statement->execute([
             'id' => $tournamentID,
             'tournamentStatus' => $tournamentStatus
+        ]);
+    }
+
+    public function eachMatches($tournamentID)
+    {
+        $statement = $this->pdo->prepare('SELECT * FROM `tournament_matches` WHERE `tournament_id` = :tournament_id');
+        $statement->execute([
+            'tournament_id' => $tournamentID
+        ]);
+
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function matchByTournamentHomeAwayID($tournamentID, $homeID, $awayID)
+    {
+        $statement = $this->pdo->prepare('SELECT * FROM `tournament_matches` WHERE `tournament_id` = :tournament_id AND `homeTeam_id` = :homeTeam_id AND `awayTeam_id` = :awayTeam_id');
+        $statement->execute([
+            'tournament_id' => $tournamentID,
+            'homeTeam_id' => $homeID,
+            'awayTeam_id' => $awayID
+        ]);
+
+        return $statement->fetch(PDO::FETCH_ASSOC);
+    }
+
+    public function changeMatchStatus($tournamentID, $homeID, $awayID, $matchStatus){
+        $statement = $this->pdo->prepare('UPDATE `tournament_matches` SET `matchStatus` = :matchStatus WHERE `tournament_id` = :tournament_id AND `homeTeam_id` = :homeTeam_id AND `awayTeam_id` = :awayTeam_id');
+        $statement->execute([
+            'tournament_id' => $tournamentID,
+            'homeTeam_id' => $homeID,
+            'awayTeam_id' => $awayID,
+            'matchStatus' => $matchStatus
         ]);
     }
 

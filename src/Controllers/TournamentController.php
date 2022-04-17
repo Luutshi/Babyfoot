@@ -79,11 +79,16 @@ class TournamentController extends Controller
                 }
 
                 echo $this->twig->render('Tournaments/beforeTournament.html.twig', [
-                    "tournament" => $tournament,
-                    "teams" => $teams
+                    'tournament' => $tournament,
+                    'teams' => $teams
                 ]);
             } elseif ($tournament['tournamentStatus'] === 'pending') {
-                echo('OUAIS');
+                $matches = $this->tournamentModel->eachMatches($_GET['id']);
+
+                echo $this->twig->render('Tournaments/pendingTournament.html.twig', [
+                    'tournament' => $tournament,
+                    'matches' => $matches
+                ]);
             }
         } else {
             header('Location: /');
@@ -145,7 +150,7 @@ class TournamentController extends Controller
                     }
 
                     shuffle($matches);
-                    
+
                     foreach($matches as $match) {
                         $this->tournamentModel->insertMatch($_GET['tournamentID'], $match['homeID'], $match['awayID']);
                     }
@@ -155,5 +160,19 @@ class TournamentController extends Controller
         } else {
             header('Location: /tournament?id='.$_GET['tournamentID']);
         }
+    }
+
+    public function activeMatch()
+    {
+        $match = $this->tournamentModel->matchByTournamentHomeAwayID($_GET['tournamentID'], $_GET['homeID'], $_GET['awayID']);
+
+        if ($match) {
+            $this->tournamentModel->changeMatchStatus($_GET['tournamentID'], $_GET['homeID'], $_GET['awayID'], 'pending');
+        }
+        header('Location: /tournament?id='.$_GET['tournamentID']);
+    }
+    public function match()
+    {
+        echo('match');
     }
 }
