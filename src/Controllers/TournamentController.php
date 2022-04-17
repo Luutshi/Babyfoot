@@ -35,16 +35,23 @@ class TournamentController extends Controller
     {
         $availablePlaces = [];
 
-        $tournaments = $this->tournamentModel->eachTournaments();
+        $beforeTournaments = $this->tournamentModel->eachTournaments('before');
+        $pendingTournaments = $this->tournamentModel->eachTournaments('pending');
 
-        foreach($tournaments as $tournament)
+        foreach($beforeTournaments as $tournament)
+        {
+            $availablePlaces[$tournament['id']] = $this->tournamentModel->eachPlayers($tournament['id']);
+        }
+
+        foreach($beforeTournaments as $tournament)
         {
             $availablePlaces[$tournament['id']] = $this->tournamentModel->eachPlayers($tournament['id']);
         }
 
         echo $this->twig->render('Home/home.html.twig', [
-            'tournaments' => $tournaments,
-            'availablePlaces' => $availablePlaces
+            'beforeTournaments' => $beforeTournaments,
+            'availablePlaces' => $availablePlaces,
+            'pendingTournaments' => $pendingTournaments
         ]);
     }
 
@@ -53,7 +60,49 @@ class TournamentController extends Controller
         $tournament = $this->tournamentModel->tournamentByID($_GET['id']);
 
         if ($tournament) {
-            $players = $this->tournamentModel->eachPlayers($_GET['id']);
+            if ($tournament['tournamentStatus'] === 'before') {
+                $players = $this->tournamentModel->eachPlayers($_GET['id']);
+
+                $teams = [];
+                for ($i = 1; $i <= $tournament['numberOfTeam']; $i++)
+                {
+                    $teams[$i]['attaquant'] = null;
+                    $teams[$i]['defenseur'] = null;
+
+                    foreach($players as $player)
+                    {
+                        if ($player['team'] == $i) {
+                            $user = $this->userModel->findOneByID($player['user_id']);
+                            $teams[$i][$player['user_function']] = $user['nickname'];
+                        }
+                    }
+                }
+
+                echo $this->twig->render('Tournaments/beforeTournament.html.twig', [
+                    "tournament" => $tournament,
+                    "teams" => $teams
+                ]);
+            } elseif ($tournament['tournamentStatus'] === 'pending') {
+                echo('OUAIS');
+            }
+        } else {
+            header('Location: /');
+            exit;
+        }
+    }
+
+    public function joinTeam()
+    {
+        $players = $this->tournamentModel->eachPlayers($_GET['tournamentID']);
+        $tournament = $this->tournamentModel->tournamentByID($_GET['tournamentID']);
+
+        if ($tournament['tournamentStatus'] === 'before') {
+            $valid = true;
+            foreach ($players as $player) {
+                if ($player['team'] === $_GET['teamID'] && $player['user_function'] === $_GET['user_function']) {
+                    $valid = false;
+                }
+            }
 
             $teams = [];
             for ($i = 1; $i <= $tournament['numberOfTeam']; $i++)
@@ -70,38 +119,41 @@ class TournamentController extends Controller
                 }
             }
 
-            echo $this->twig->render('Tournaments/tournament.html.twig', [
-                "tournament" => $tournament,
-                "teams" => $teams
-            ]);
-        } else {
-            header('Location: /');
-            exit;
-        }
-    }
-
-    public function joinTeam()
-    {
-        $players = $this->tournamentModel->eachPlayers($_GET['tournamentID']);
-
-        $valid = true;
-        foreach ($players as $player) {
-            if ($player['team'] === $_GET['teamID'] && $player['user_function'] === $_GET['user_function']) {
-                $valid = false;
-            }
-        }
-
-        if ($valid === true) {
-            foreach ($players as $player)
-            {
-                if ($_SESSION['user']['id'] == $player['user_id']) {
-                    $this->tournamentModel->removePlayerFromTournament($_GET['tournamentID'], $_SESSION['user']['id']);
+            if ($valid === true) {
+                foreach ($players as $player)
+                {
+                    if ($_SESSION['user']['id'] == $player['user_id']) {
+                        $this->tournamentModel->removePlayerFromTournament($_GET['tournamentID'], $_SESSION['user']['id']);
+                    }
                 }
+                $this->tournamentModel->addPlayerToTeam($_GET['tournamentID'], $_GET['teamID'], $_GET['user_function'], $_SESSION['user']['id']);
+                $players = $this->tournamentModel->eachPlayers($_GET['tournamentID']);
+
+                if (count($players) === $tournament['numberOfTeam']*2) {
+                    $this->tournamentModel->changeTournamentStatus($_GET['tournamentID'], 'pending');
+
+                    $matches = [];
+                    for ($home = 1; $home <= count($teams); $home++) {
+                        for ($away = 1; $away <= count($teams); $away++) {
+                            if($home !== $away) {
+                                $matches[] = [
+                                    'homeID' => $home,
+                                    'awayID' => $away
+                                ];
+                            }
+                        }
+                    }
+
+                    shuffle($matches);
+                    
+                    foreach($matches as $match) {
+                        $this->tournamentModel->insertMatch($_GET['tournamentID'], $match['homeID'], $match['awayID']);
+                    }
+                }
+                header('Location: /tournament?id='.$_GET['tournamentID']);
             }
-
-            $this->tournamentModel->addPlayerToTeam($_GET['tournamentID'], $_GET['teamID'], $_GET['user_function'], $_SESSION['user']['id']);
+        } else {
+            header('Location: /tournament?id='.$_GET['tournamentID']);
         }
-
-        header('Location: ../tournament?id='.$_GET['tournamentID']);
     }
 }

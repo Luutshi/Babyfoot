@@ -1,12 +1,31 @@
+main.content {
+    display: flex;
+    justify-content: space-between;
+}
+
+a {
+    color: black;
+    text-decoration: none;
+}
+
 .tournamentList {
     display: flex;
     flex-direction: column;
     gap: 10px;
+    width: 46%;
+    height: 85vh;
+    overflow: scroll;
+}
+
+.middleBar {
+    background-color: black;
+    width: 1px;
+    height: 85vh;
 }
 
 .tournamentList a {
     background-color: #8b8b8b;
-    width: 50%;
+    width: 100%;
 }
 
 .tournamentList a:hover {

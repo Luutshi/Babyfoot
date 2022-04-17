@@ -14,21 +14,21 @@ header {
     padding: 0 100px;
 }
 
-nav button {
+header nav button {
     background-color: rgb(50, 50, 50);
     border: none;
     padding: 10px 20px;
 }
 
-nav button a {
+header nav button a {
     color: white;
 }
 
-a {
+header a {
     color: black;
     text-decoration: none;
 }
 
-.content {
+main.content {
     padding: 10px 100px 0;
 }

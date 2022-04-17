@@ -9,19 +9,44 @@ class TournamentModel extends Model
 {
     public function createTournament(string $creator, string $name, string $description, int $numberOfTeam)
     {
-        $statement = $this->pdo->prepare('INSERT INTO `tournament`(`creator`, `name`, `description`, `numberOfTeam`) VALUES (:creator, :name, :description, :numberOfTeam)');
+        $statement = $this->pdo->prepare('INSERT INTO `tournament`(`creator`, `name`, `description`, `numberOfTeam`, `tournamentStatus`) VALUES (:creator, :name, :description, :numberOfTeam, :tournamentStatus)');
         $statement->execute([
             'creator' => $creator,
             'name' => $name,
             'description' => $description,
-            'numberOfTeam' => $numberOfTeam
+            'numberOfTeam' => $numberOfTeam,
+            'tournamentStatus' => 'before'
         ]);
     }
 
-    public function eachTournaments()
+    public function insertMatch(int $tournamentID, int $homeTeamID, int $awayTeamID)
     {
-        $statement = $this->pdo->prepare('SELECT * FROM `tournament` ORDER BY id DESC');
-        $statement->execute();
+        $statement = $this->pdo->prepare('INSERT INTO `tournament_matches` (`tournament_id`, `homeTeam_id`, `awayTeam_id`, `home_goals`, `away_goals`, `matchStatus`) VALUES (:tournament_id, :homeTeam_id, :awayTeam_id, :home_goals, :away_goals, :matchStatus)');
+        $statement->execute([
+            'tournament_id' => $tournamentID,
+            'homeTeam_id' => $homeTeamID,
+            'awayTeam_id' => $awayTeamID,
+            'home_goals' => 0,
+            'away_goals' => 0,
+            'matchStatus' => 'before'
+        ]);
+    }
+
+    public function changeTournamentStatus($tournamentID, $tournamentStatus)
+    {
+        $statement = $this->pdo->prepare('UPDATE `tournament` SET `tournamentStatus` = :tournamentStatus WHERE `id` = :id ORDER BY id DESC');
+        $statement->execute([
+            'id' => $tournamentID,
+            'tournamentStatus' => $tournamentStatus
+        ]);
+    }
+
+    public function eachTournaments(string $tournamentStatus)
+    {
+        $statement = $this->pdo->prepare('SELECT * FROM `tournament` WHERE `tournamentStatus` = :tournamentStatus ORDER BY id DESC');
+        $statement->execute([
+            'tournamentStatus' => $tournamentStatus
+        ]);
 
         return $statement->fetchAll(PDO::FETCH_ASSOC);
     }
