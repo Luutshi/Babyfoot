@@ -38,6 +38,7 @@ $router->post('/tournament', 'Mvc\Controllers\TournamentController@tournament');
 $router->get('/joinTeam', 'Mvc\Controllers\TournamentController@joinTeam');
 $router->get('/activeMatch', 'Mvc\Controllers\TournamentController@activeMatch');
 $router->get('/match', 'Mvc\Controllers\TournamentController@match');
+$router->get('/addGoal', 'Mvc\Controllers\TournamentController@addGoal');
 
 
 

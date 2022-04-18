@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block css %}
+    <link href="css/Tournaments/match.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <section class="match">
+        <div class="header">
+            <div class="team">
+                <div class="teamNumber">
+                    <p>{{ match.homeTeam_id }}</p>
+                </div>
+                <p>Équipe {{ match.homeTeam_id }}</p>
+            </div>
+
+            <div class="matchScore">
+                <p class="score">{{ match.home_goals }} - {{ match.away_goals }}</p>
+                {% if match.status == 'pending' %}
+                    <p class="status">en cours</p>
+                {% elseif match.status == 'finished' %}
+                    <p class="status">terminé</p>
+                {% else %}
+                    <p class="status">erreur</p>
+                {% endif %}
+            </div>
+
+            <div class="team">
+                <div class="teamNumber">
+                    <p>{{ match.awayTeam_id }}</p>
+                </div>
+                <p>Équipe {{ match.awayTeam_id }}</p>
+            </div>
+        </div>
+
+        <div class="content">
+            {% for goal in goals %}
+                <div class="{{ goal.teamScore }}">
+                    <span>New goal ! : {{ goal.home_goals }} - {{ goal.away_goals }}</span>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if tournament.creator == session.user.nickname %}
+            <div class="matchControl">
+                <button><a href="/addGoal?tournamentID={{ match.tournament_id }}&homeID={{ match.homeTeam_id }}&awayID={{ match.awayTeam_id }}&teamScore=home">Home team score</a></button>
+                <button><a href="/addGoal?tournamentID={{ match.tournament_id }}&homeID={{ match.homeTeam_id }}&awayID={{ match.awayTeam_id }}&teamScore=away">Away team score</a></button>
+            </div>
+        {% endif %}
+    </section>
+{% endblock %}

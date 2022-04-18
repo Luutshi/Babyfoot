@@ -60,7 +60,7 @@ class TournamentController extends Controller
         $tournament = $this->tournamentModel->tournamentByID($_GET['id']);
 
         if ($tournament) {
-            if ($tournament['tournamentStatus'] === 'before') {
+            if ($tournament['status'] === 'before') {
                 $players = $this->tournamentModel->eachPlayers($_GET['id']);
 
                 $teams = [];
@@ -82,7 +82,7 @@ class TournamentController extends Controller
                     'tournament' => $tournament,
                     'teams' => $teams
                 ]);
-            } elseif ($tournament['tournamentStatus'] === 'pending') {
+            } elseif ($tournament['status'] === 'pending') {
                 $matches = $this->tournamentModel->eachMatches($_GET['id']);
 
                 echo $this->twig->render('Tournaments/pendingTournament.html.twig', [
@@ -101,7 +101,7 @@ class TournamentController extends Controller
         $players = $this->tournamentModel->eachPlayers($_GET['tournamentID']);
         $tournament = $this->tournamentModel->tournamentByID($_GET['tournamentID']);
 
-        if ($tournament['tournamentStatus'] === 'before') {
+        if ($tournament['status'] === 'before') {
             $valid = true;
             foreach ($players as $player) {
                 if ($player['team'] === $_GET['teamID'] && $player['user_function'] === $_GET['user_function']) {
@@ -165,14 +165,47 @@ class TournamentController extends Controller
     public function activeMatch()
     {
         $match = $this->tournamentModel->matchByTournamentHomeAwayID($_GET['tournamentID'], $_GET['homeID'], $_GET['awayID']);
+        $tournament = $this->tournamentModel->tournamentByID($match['tournament_id']);
 
-        if ($match) {
+        if ($match && $_SESSION['user']['nickname'] === $tournament['creator']) {
             $this->tournamentModel->changeMatchStatus($_GET['tournamentID'], $_GET['homeID'], $_GET['awayID'], 'pending');
         }
         header('Location: /tournament?id='.$_GET['tournamentID']);
     }
+
     public function match()
     {
-        echo('match');
+        $match = $this->tournamentModel->matchByTournamentHomeAwayID($_GET['tournamentID'], $_GET['homeID'], $_GET['awayID']);
+        $tournament = $this->tournamentModel->tournamentByID($_GET['tournamentID']);
+        $goals = $this->tournamentModel->tournamentGoalsByID($_GET['tournamentID']);
+
+        if ($match['status'] === 'before') {
+            header('Location: /tournament?id='.$_GET['tournamentID']);
+        } else {
+            echo $this->twig->render('Tournaments/match.html.twig', [
+                'match' => $match,
+                'tournament' => $tournament,
+                'goals' => $goals
+            ]);
+        }
+
+        dump($goals);
+    }
+
+    public function addGoal()
+    {
+        $tournament = $this->tournamentModel->tournamentByID($_GET['tournamentID']);
+        $match = $this->tournamentModel->matchByTournamentHomeAwayID($_GET['tournamentID'], $_GET['homeID'], $_GET['awayID']);
+
+        if ($tournament && $tournament['creator'] === $_SESSION['user']['nickname']) {
+            if ($_GET['teamScore'] === 'home') {
+                $this->tournamentModel->insertGoal($_GET['tournamentID'], $_GET['homeID'], $_GET['awayID'], $_GET['teamScore'],$match['home_goals']+1, $match['away_goals']);
+                $this->tournamentModel->updateMatchScore($_GET['tournamentID'], $_GET['homeID'], $_GET['awayID'], $match['home_goals']+1, $match['away_goals']);
+            } elseif ($_GET['teamScore'] === 'away') {
+                $this->tournamentModel->insertGoal($_GET['tournamentID'], $_GET['homeID'], $_GET['awayID'], $_GET['teamScore'], $match['home_goals'], $match['away_goals']+1);
+                $this->tournamentModel->updateMatchScore($_GET['tournamentID'], $_GET['homeID'], $_GET['awayID'], $match['home_goals'], $match['away_goals']+1);
+            }
+        }
+        header('Location: /match?tournamentID='.$_GET['tournamentID'].'&homeID='.$_GET['homeID'].'&awayID='.$_GET['awayID']);
     }
 }
