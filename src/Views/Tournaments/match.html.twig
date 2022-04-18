@@ -41,7 +41,7 @@
             {% endfor %}
         </div>
 
-        {% if tournament.creator == session.user.nickname %}
+        {% if tournament.creator == session.user.nickname and match.status == 'pending' %}
             <div class="matchControl">
                 <button><a href="/addGoal?tournamentID={{ match.tournament_id }}&homeID={{ match.homeTeam_id }}&awayID={{ match.awayTeam_id }}&teamScore=home">Home team score</a></button>
                 <button><a href="/addGoal?tournamentID={{ match.tournament_id }}&homeID={{ match.homeTeam_id }}&awayID={{ match.awayTeam_id }}&teamScore=away">Away team score</a></button>
