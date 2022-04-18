@@ -21,14 +21,14 @@ class TournamentModel extends Model
 
     public function insertMatch(int $tournamentID, int $homeTeamID, int $awayTeamID)
     {
-        $statement = $this->pdo->prepare('INSERT INTO `match` (`tournament_id`, `homeTeam_id`, `awayTeam_id`, `home_goals`, `away_goals`, `matchStatus`) VALUES (:tournament_id, :homeTeam_id, :awayTeam_id, :home_goals, :away_goals, :matchStatus)');
+        $statement = $this->pdo->prepare('INSERT INTO `match` (`tournament_id`, `homeTeam_id`, `awayTeam_id`, `home_goals`, `away_goals`, `status`) VALUES (:tournament_id, :homeTeam_id, :awayTeam_id, :home_goals, :away_goals, :status)');
         $statement->execute([
             'tournament_id' => $tournamentID,
             'homeTeam_id' => $homeTeamID,
             'awayTeam_id' => $awayTeamID,
             'home_goals' => 0,
             'away_goals' => 0,
-            'matchStatus' => 'before'
+            'status' => 'before'
         ]);
     }
 
@@ -123,11 +123,13 @@ class TournamentModel extends Model
         ]);
     }
 
-    public function tournamentGoalsByID(int $tournamentID)
+    public function tournamentGoalsByID(int $tournamentID, int $homeID, int $awayID)
     {
-        $statement = $this->pdo->prepare('SELECT * FROM `goal` WHERE `tournament_id` = :tournamentID');
+        $statement = $this->pdo->prepare('SELECT * FROM `goal` WHERE `tournament_id` = :tournamentID AND `home_id` = :home_id AND `away_id` = :away_id');
         $statement->execute([
-            'tournamentID' => $tournamentID
+            'tournamentID' => $tournamentID,
+            'home_id' => $homeID,
+            'away_id' => $awayID
         ]);
 
         return $statement->fetchAll(PDO::FETCH_ASSOC);

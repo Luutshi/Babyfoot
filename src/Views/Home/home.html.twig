@@ -6,28 +6,33 @@
 
 {% block content %}
 
-    <section class="tournamentList">
-        <h2>Tournament list (you can scroll)</h2>
-        {% for tournament in beforeTournaments %}
-            <a href="/tournament?id={{ tournament.id }}">
-                <p class="name"><u>{{ tournament.name }} - {{ tournament.creator }}</u></p>
-                <p><u>Number of players</u> : {{ availablePlaces[tournament.id]|length }}/{{ tournament.numberOfTeam * 2}}</p>
-                <p class="description"><u>Description:</u>&nbsp;{{ tournament.description }}</p>
-            </a>
-        {% endfor %}
-    </section>
+    <div>
+        <h2>Liste des futurs tournois (scrollable)</h2>
+        <section class="tournamentList">
+            {% for tournament in beforeTournaments %}
+                <a href="/tournament?id={{ tournament.id }}">
+                    <p class="name"><u>{{ tournament.name }} - {{ tournament.creator }}</u></p>
+                    <p><u>Number of players</u> : {{ availablePlaces[tournament.id]|length }}/{{ tournament.numberOfTeam * 2}}</p>
+                    <p class="description"><u>Description:</u>&nbsp;{{ tournament.description }}</p>
+                </a>
+            {% endfor %}
+        </section>
+    </div>
 
     <div class="middleBar"></div>
 
-    <section class="tournamentList">
-        <h2>Tournament list</h2>
-        {% for tournament in pendingTournaments %}
-            <a href="/tournament?id={{ tournament.id }}">
-                <p class="name"><u>{{ tournament.name }} - {{ tournament.creator }}</u></p>
-                <p><u>Number of players</u> : {{ tournament.numberOfTeam * 2 }}/{{ tournament.numberOfTeam * 2}}</p>
-                <p class="description"><u>Description:</u>&nbsp;{{ tournament.description }}</p>
-            </a>
-        {% endfor %}
-    </section>
+    <div>
+        <h2>Liste des tournois en cours (scrollable)</h2>
+        <section class="tournamentList">
+            {% for tournament in pendingTournaments %}
+                <a href="/tournament?id={{ tournament.id }}">
+                    <p class="name"><u>{{ tournament.name }} - {{ tournament.creator }}</u></p>
+                    <p><u>Number of players</u> : {{ tournament.numberOfTeam * 2 }}/{{ tournament.numberOfTeam * 2}}</p>
+                    <p class="description"><u>Description:</u>&nbsp;{{ tournament.description }}</p>
+                </a>
+            {% endfor %}
+        </section>
+    </div>
+
 
 {% endblock %}

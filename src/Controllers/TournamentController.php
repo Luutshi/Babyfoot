@@ -177,7 +177,7 @@ class TournamentController extends Controller
     {
         $match = $this->tournamentModel->matchByTournamentHomeAwayID($_GET['tournamentID'], $_GET['homeID'], $_GET['awayID']);
         $tournament = $this->tournamentModel->tournamentByID($_GET['tournamentID']);
-        $goals = $this->tournamentModel->tournamentGoalsByID($_GET['tournamentID']);
+        $goals = $this->tournamentModel->tournamentGoalsByID($_GET['tournamentID'], $_GET['homeID'], $_GET['awayID']);
 
         if ($match['status'] === 'before') {
             header('Location: /tournament?id='.$_GET['tournamentID']);
@@ -188,8 +188,6 @@ class TournamentController extends Controller
                 'goals' => $goals
             ]);
         }
-
-        dump($goals);
     }
 
     public function addGoal()
@@ -197,15 +195,23 @@ class TournamentController extends Controller
         $tournament = $this->tournamentModel->tournamentByID($_GET['tournamentID']);
         $match = $this->tournamentModel->matchByTournamentHomeAwayID($_GET['tournamentID'], $_GET['homeID'], $_GET['awayID']);
 
-        if ($tournament && $tournament['creator'] === $_SESSION['user']['nickname']) {
-            if ($_GET['teamScore'] === 'home') {
-                $this->tournamentModel->insertGoal($_GET['tournamentID'], $_GET['homeID'], $_GET['awayID'], $_GET['teamScore'],$match['home_goals']+1, $match['away_goals']);
-                $this->tournamentModel->updateMatchScore($_GET['tournamentID'], $_GET['homeID'], $_GET['awayID'], $match['home_goals']+1, $match['away_goals']);
-            } elseif ($_GET['teamScore'] === 'away') {
-                $this->tournamentModel->insertGoal($_GET['tournamentID'], $_GET['homeID'], $_GET['awayID'], $_GET['teamScore'], $match['home_goals'], $match['away_goals']+1);
-                $this->tournamentModel->updateMatchScore($_GET['tournamentID'], $_GET['homeID'], $_GET['awayID'], $match['home_goals'], $match['away_goals']+1);
+        if ($match['status'] === 'pending') {
+            if ($tournament && $tournament['creator'] === $_SESSION['user']['nickname']) {
+                if ($_GET['teamScore'] === 'home') {
+                    $this->tournamentModel->insertGoal($_GET['tournamentID'], $_GET['homeID'], $_GET['awayID'], $_GET['teamScore'],$match['home_goals']+1, $match['away_goals']);
+                    $this->tournamentModel->updateMatchScore($_GET['tournamentID'], $_GET['homeID'], $_GET['awayID'], $match['home_goals']+1, $match['away_goals']);
+                } elseif ($_GET['teamScore'] === 'away') {
+                    $this->tournamentModel->insertGoal($_GET['tournamentID'], $_GET['homeID'], $_GET['awayID'], $_GET['teamScore'], $match['home_goals'], $match['away_goals']+1);
+                    $this->tournamentModel->updateMatchScore($_GET['tournamentID'], $_GET['homeID'], $_GET['awayID'], $match['home_goals'], $match['away_goals']+1);
+                }
+
+                $match = $this->tournamentModel->matchByTournamentHomeAwayID($_GET['tournamentID'], $_GET['homeID'], $_GET['awayID']);
+                if ($match['home_goals'] >= 10 || $match['away_goals'] >= 10) {
+                    $this->tournamentModel->changeMatchStatus($_GET['tournamentID'], $_GET['homeID'], $_GET['awayID'], 'finished');
+                }
             }
         }
+
         header('Location: /match?tournamentID='.$_GET['tournamentID'].'&homeID='.$_GET['homeID'].'&awayID='.$_GET['awayID']);
     }
 }

@@ -12,18 +12,22 @@ a {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    width: 46%;
-    height: 85vh;
+    width: 100%;
+    height: 65vh;
     overflow: scroll;
+}
+
+div {
+    width: 46%;
 }
 
 .middleBar {
     background-color: black;
     width: 1px;
-    height: 85vh;
+    height: 80vh;
 }
 
-.tournamentList a {
+.tournamentList  a {
     background-color: #8b8b8b;
     width: 100%;
 }
