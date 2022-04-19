@@ -9,13 +9,13 @@ class TournamentModel extends Model
 {
     public function createTournament(string $creator, string $name, string $description, int $numberOfTeam)
     {
-        $statement = $this->pdo->prepare('INSERT INTO `tournament`(`creator`, `name`, `description`, `numberOfTeam`, `tournamentStatus`) VALUES (:creator, :name, :description, :numberOfTeam, :tournamentStatus)');
+        $statement = $this->pdo->prepare('INSERT INTO `tournament`(`creator`, `name`, `description`, `numberOfTeam`, `status`) VALUES (:creator, :name, :description, :numberOfTeam, :status)');
         $statement->execute([
             'creator' => $creator,
             'name' => $name,
             'description' => $description,
             'numberOfTeam' => $numberOfTeam,
-            'tournamentStatus' => 'before'
+            'status' => 'before'
         ]);
     }
 
@@ -137,9 +137,9 @@ class TournamentModel extends Model
 
     public function insertGoal(int $tournamentID, int $homeID, int $awayID, string $teamScore, int $homeGoals, int $awayGoals)
     {
-        $statement = $this->pdo->prepare('INSERT INTO `goal`(`tournament_id`, `home_id`, `away_id`, `teamScore`, `home_goals`, `away_goals`) VALUES (:tournamentID, :home_id, :away_id, :teamScore, :home_goals, :away_goals)');
+        $statement = $this->pdo->prepare('INSERT INTO `goal`(`tournament_id`, `home_id`, `away_id`, `teamScore`, `home_goals`, `away_goals`) VALUES (:tournament_id, :home_id, :away_id, :teamScore, :home_goals, :away_goals)');
         $statement->execute([
-            'tournamentID' => $tournamentID,
+            'tournament_id' => $tournamentID,
             'home_id' => $homeID,
             'away_id' => $awayID,
             'teamScore' => $teamScore,
@@ -157,5 +157,56 @@ class TournamentModel extends Model
             'home_goals' => $homeGoals,
             'away_goals' => $awayGoals
         ]);
+    }
+
+    public function insertTeamIntoTournamentTable(int $tournamentID, int $teamID)
+    {
+        $statement = $this->pdo->prepare('INSERT INTO `table`(`tournament_id`, `team_id`, `goalsFor`, `goalsAgainst`, `played`, `win`, `lose`, `points`) VALUES (:tournament_id, :team_id, :goalsFor, :goalsAgainst, :played, :win, :lose, :points)');
+        $statement->execute([
+            'tournament_id' => $tournamentID,
+            'team_id' => $teamID,
+            'goalsFor' => 0,
+            'goalsAgainst' => 0,
+            'played' => 0,
+            'win' => 0,
+            'lose' => 0,
+            'points' => 0
+        ]);
+    }
+
+    public function tournamentTableByID($tournamentID)
+    {
+        $statement = $this->pdo->prepare('SELECT * FROM `table` WHERE `tournament_id` = :tournament_id ORDER BY `points` DESC, `goalsFor` DESC');
+        $statement->execute([
+            'tournament_id' => $tournamentID
+        ]);
+
+        return $statement->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function updateTeamStatsTable($tournamentID, $teamID, $goalsFor, $goalsAgainst, $played, $win, $lose, $points)
+    {
+        $statement = $this->pdo->prepare('UPDATE `table` SET `goalsFor` = :goalsFor, `goalsAgainst` = :goalsAgainst, `played` = :played, `win` = :win, `lose` = :lose, `points` = :points WHERE `tournament_id` = :tournament_id AND `team_id` = :team_id');
+        $statement->execute([
+            'tournament_id' => $tournamentID,
+            'team_id' => $teamID,
+            'goalsFor' => $goalsFor,
+            'goalsAgainst' => $goalsAgainst,
+            'played' => $played,
+            'win' => $win,
+            'lose' => $lose,
+            'points' => $points
+        ]);
+    }
+
+    public function teamStatsByID($tournamentID, $teamID)
+    {
+        $statement = $this->pdo->prepare('SELECT * FROM `table` WHERE `tournament_id` = :tournament_id AND `team_id` = :team_id');
+        $statement->execute([
+            'tournament_id' => $tournamentID,
+            'team_id' => $teamID
+        ]);
+
+        return $statement->fetch(PDO::FETCH_ASSOC);
     }
 }

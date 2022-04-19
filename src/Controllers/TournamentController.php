@@ -37,11 +37,7 @@ class TournamentController extends Controller
 
         $beforeTournaments = $this->tournamentModel->eachTournaments('before');
         $pendingTournaments = $this->tournamentModel->eachTournaments('pending');
-
-        foreach($beforeTournaments as $tournament)
-        {
-            $availablePlaces[$tournament['id']] = $this->tournamentModel->eachPlayers($tournament['id']);
-        }
+        $finishedTournaments = $this->tournamentModel->eachTournaments('finished');
 
         foreach($beforeTournaments as $tournament)
         {
@@ -51,7 +47,8 @@ class TournamentController extends Controller
         echo $this->twig->render('Home/home.html.twig', [
             'beforeTournaments' => $beforeTournaments,
             'availablePlaces' => $availablePlaces,
-            'pendingTournaments' => $pendingTournaments
+            'pendingTournaments' => $pendingTournaments,
+            'finishedTournaments' => $finishedTournaments
         ]);
     }
 
@@ -82,12 +79,14 @@ class TournamentController extends Controller
                     'tournament' => $tournament,
                     'teams' => $teams
                 ]);
-            } elseif ($tournament['status'] === 'pending') {
+            } elseif ($tournament['status'] === 'pending' || $tournament['status'] === 'finished') {
                 $matches = $this->tournamentModel->eachMatches($_GET['id']);
+                $table = $this->tournamentModel->tournamentTableByID($_GET['id']);
 
-                echo $this->twig->render('Tournaments/pendingTournament.html.twig', [
+                echo $this->twig->render('Tournaments/pendingFinishedTournament.html.twig', [
                     'tournament' => $tournament,
-                    'matches' => $matches
+                    'matches' => $matches,
+                    'table' => $table
                 ]);
             }
         } else {
@@ -136,6 +135,10 @@ class TournamentController extends Controller
 
                 if (count($players) === $tournament['numberOfTeam']*2) {
                     $this->tournamentModel->changeTournamentStatus($_GET['tournamentID'], 'pending');
+
+                    for($i = 1; $i <= $tournament['numberOfTeam']; $i++) {
+                        $this->tournamentModel->insertTeamIntoTournamentTable($_GET['tournamentID'], $i);
+                    }
 
                     $matches = [];
                     for ($home = 1; $home <= count($teams); $home++) {
@@ -187,6 +190,21 @@ class TournamentController extends Controller
                 'tournament' => $tournament,
                 'goals' => $goals
             ]);
+
+            if ($tournament['status'] === 'pending') {
+                $matches = $this->tournamentModel->eachMatches($_GET['tournamentID']);
+
+                $valid = true;
+                foreach($matches as $match) {
+                    if ($match['status'] !== 'finished') {
+                        $valid = false;
+                    }
+                }
+
+                if ($valid) {
+                    $this->tournamentModel->changeTournamentStatus($_GET['tournamentID'], 'finished');
+                }
+            }
         }
     }
 
@@ -208,6 +226,17 @@ class TournamentController extends Controller
                 $match = $this->tournamentModel->matchByTournamentHomeAwayID($_GET['tournamentID'], $_GET['homeID'], $_GET['awayID']);
                 if ($match['home_goals'] >= 10 || $match['away_goals'] >= 10) {
                     $this->tournamentModel->changeMatchStatus($_GET['tournamentID'], $_GET['homeID'], $_GET['awayID'], 'finished');
+
+                    $homeData = $this->tournamentModel->teamStatsByID($_GET['tournamentID'], $match['homeTeam_id']);
+                    $awayData = $this->tournamentModel->teamStatsByID($_GET['tournamentID'], $match['awayTeam_id']);
+
+                    if ($match['home_goals'] >= 10) {
+                        $this->tournamentModel->updateTeamStatsTable($_GET['tournamentID'], $match['homeTeam_id'], $homeData['goalsFor']+$match['home_goals'], $homeData['goalsAgainst']+$match['away_goals'], $homeData['played']+1, $homeData['win']+1, $homeData['lose'], $homeData['points']+3);
+                        $this->tournamentModel->updateTeamStatsTable($_GET['tournamentID'], $match['awayTeam_id'], $awayData['goalsFor']+$match['away_goals'], $awayData['goalsAgainst']+$match['home_goals'], $awayData['played']+1, $awayData['win'], $awayData['lose']+1, $awayData['points']);
+                    } else {
+                        $this->tournamentModel->updateTeamStatsTable($_GET['tournamentID'], $match['homeTeam_id'], $homeData['goalsFor']+$match['home_goals'], $homeData['goalsAgainst']+$match['away_goals'], $homeData['played']+1, $homeData['win'], $homeData['lose']+1, $homeData['points']);
+                        $this->tournamentModel->updateTeamStatsTable($_GET['tournamentID'], $match['awayTeam_id'], $awayData['goalsFor']+$match['away_goals'], $awayData['goalsAgainst']+$match['home_goals'], $awayData['played']+1, $awayData['win']+1, $awayData['lose'], $awayData['points']+3);
+                    }
                 }
             }
         }

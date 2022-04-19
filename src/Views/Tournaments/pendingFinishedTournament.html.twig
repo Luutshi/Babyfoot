@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block css %}
+    <link href="css/Tournaments/pendingFinishedTournament.css" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <section class="matches">
+        <h2>Les matchs du tournois (scrollable)</h2>
+        <div class="listMatches">
+            {% for key, match in matches %}
+                <article class="match{{ key+1 }}">
+                    <p><u>Match numéro {{ key+1 }}</u></p>
+                    <div>
+                        {% if match.status == 'before' %}
+                            <p>Status: pas encore commencé</p>
+                        {% elseif match.status == 'pending' %}
+                            <p>Status: en cours</p>
+                        {% else %}
+                            <p>Status: terminé</p>
+                        {% endif %}
+                        <hr>
+                        <p><u>Équipe {{ match.homeTeam_id }} - Équipe {{ match.awayTeam_id }}</u></p>
+                        {% if match.status == 'before' %}
+                            <p>Score: ? - ?</p>
+                        {% else %}
+                            <p>Score: {{ match.home_goals }} - {{ match.away_goals }}</p>
+                        {% endif %}
+                        {% if tournament.creator == session.user.nickname and match.status == 'before' %}
+                            <a href="/activeMatch?tournamentID={{ tournament.id }}&homeID={{ match.homeTeam_id }}&awayID={{ match.awayTeam_id }}"><button>Start the game</button></a>
+                        {% endif %}
+                        {% if match.status != 'before' %}
+                            <button>
+                                <a href="/match?tournamentID={{ tournament.id }}&homeID={{ match.homeTeam_id }}&awayID={{ match.awayTeam_id }}">
+                                    Voir le tableau des scores</a>
+                            </button>
+                        {% endif %}
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    </section>
+
+    <div class="middleBar"></div>
+
+    <section class="table">
+        <h2>Le classement du tournois (matchs terminés)</h2>
+        <div class="listTeams">
+            <table>
+                <thead>
+                    <tr>
+                        <td>Équipe</td>
+                        <td title="Nombre de matchs joués">MJ</td>
+                        <td title="Nombre de matchs gagnés">MG</td>
+                        <td title="Nombre de matchs perdus">MP</td>
+                        <td title="Nombre de buts marqués">BM</td>
+                        <td title="Nombre de buts encaissés">BE</td>
+                        <td title="Points">PTS</td>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for team in table %}
+                    <tr>
+                        <td>{{ team.team_id }}</td>
+                        <td>{{ team.played }}</td>
+                        <td>{{ team.win }}</td>
+                        <td>{{ team.lose }}</td>
+                        <td>{{ team.goalsFor }}</td>
+                        <td>{{ team.goalsAgainst }}</td>
+                        <td>{{ team.points }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </section>
+{% endblock %}
