@@ -6,32 +6,49 @@
 
 {% block content %}
 
-    <div>
-        <h2>Liste des futurs tournois (scrollable)</h2>
-        <section class="tournamentList">
-            {% for tournament in beforeTournaments %}
-                <a href="/tournament?id={{ tournament.id }}">
-                    <p class="name"><u>{{ tournament.name }} - {{ tournament.creator }}</u></p>
-                    <p><u>Number of players</u> : {{ availablePlaces[tournament.id]|length }}/{{ tournament.numberOfTeam * 2}}</p>
-                    <p class="description"><u>Description:</u>&nbsp;{{ tournament.description }}</p>
-                </a>
-            {% endfor %}
-        </section>
+    <div class="left">
+        <div class="tournament">
+            <h2>Liste des futurs tournois (scrollable)</h2>
+            <section class="tournamentList">
+                {% for tournament in beforeTournaments %}
+                    <a href="/tournament?id={{ tournament.id }}">
+                        <p class="name"><u>{{ tournament.name }} - {{ tournament.creator }}</u></p>
+                        <p><u>Number of players</u> : {{ availablePlaces[tournament.id]|length }}/{{ tournament.numberOfTeam * 2}}</p>
+                        <p class="description"><u>Description:</u>&nbsp;{{ tournament.description }}</p>
+                    </a>
+                {% endfor %}
+            </section>
+        </div>
     </div>
 
     <div class="middleBar"></div>
 
-    <div>
-        <h2>Liste des tournois en cours (scrollable)</h2>
-        <section class="tournamentList">
-            {% for tournament in pendingTournaments %}
-                <a href="/tournament?id={{ tournament.id }}">
-                    <p class="name"><u>{{ tournament.name }} - {{ tournament.creator }}</u></p>
-                    <p><u>Number of players</u> : {{ tournament.numberOfTeam * 2 }}/{{ tournament.numberOfTeam * 2}}</p>
-                    <p class="description"><u>Description:</u>&nbsp;{{ tournament.description }}</p>
-                </a>
-            {% endfor %}
-        </section>
+    <div class="right">
+        <div class="tournament">
+            <h2>Liste des tournois en cours (scrollable)</h2>
+            <section class="tournamentList">
+                {% for tournament in pendingTournaments %}
+                    <a href="/tournament?id={{ tournament.id }}">
+                        <p class="name"><u>{{ tournament.name }} - {{ tournament.creator }}</u></p>
+                        <p><u>Number of players</u> : {{ tournament.numberOfTeam * 2 }}/{{ tournament.numberOfTeam * 2}}</p>
+                        <p class="description"><u>Description:</u>&nbsp;{{ tournament.description }}</p>
+                    </a>
+                {% endfor %}
+            </section>
+        </div>
+
+        <div class="tournament">
+            <h2>Liste des tournois en terminés (scrollable)</h2>
+            <section class="tournamentList">
+                {% for tournament in finishedTournaments %}
+                    <a href="/tournament?id={{ tournament.id }}">
+                        <p class="name"><u>{{ tournament.name }} - {{ tournament.creator }}</u></p>
+                        <p><u>Number of players</u> : {{ tournament.numberOfTeam * 2 }}/{{ tournament.numberOfTeam * 2}}</p>
+                        <p class="description"><u>Description:</u>&nbsp;{{ tournament.description }}</p>
+                    </a>
+                {% endfor %}
+            </section>
+        </div>
     </div>
 
 

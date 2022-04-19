@@ -1,8 +1,36 @@
-.matches {
+main.content {
+    display: flex;
+    justify-content: space-between;
+}
+
+section {
+    justify-content: center;
+    gap: 20px;
+    width: 46%;
+    border: 1px solid black;
+}
+
+h2 {
+    padding: 20px;
+    margin: 0;
+    border-bottom: 1px solid black;
+}
+
+.matches .listMatches {
+    width: 100%;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 20px;
+    gap: 10px;
+    flex-direction: row;
+    overflow: scroll;
+    height: 70vh;
+}
+
+.middleBar {
+    background-color: black;
+    width: 1px;
+    height: 670px;
 }
 
 .matches article {
@@ -10,7 +38,7 @@
     flex-direction: column;
     gap: 10px;
     padding: 10px 20px;
-    width: 250px;
+    width: 40%;
     background-color: #8b8b8b;
     border-radius: 5px;
 }
@@ -46,4 +74,18 @@ hr {
 .matches article > div button {
     border: solid 2px black;
     padding: 5px 20px;
+}
+
+.table table {
+    width: 100%;
+    text-align: center;
+    border: 1px solid black;
+}
+
+.table table thead {
+    font-weight: bold;
+}
+
+.table table td {
+    border: 1px solid black;
 }
